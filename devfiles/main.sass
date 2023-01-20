@@ -1,0 +1,53 @@
+*
+    margin: 0
+    padding: 0
+    font-family: system-ui
+.hidden
+    display: none !important
+body
+    min-height: 100vh
+    margin: 0 50px
+    .header
+        width: 100%
+        margin: 50px 5px 5px 5px
+        align-items:  baseline
+        display: inline-flex
+        justify-content: space-between
+        button
+            margin-right: 10px
+            background-color: white
+            padding: 3px
+            box-shadow: 2px 2px 0px black
+            cursor: pointer
+    .split-line
+        width: 100%
+        margin: auto
+        border-bottom: 2px black solid
+    .content
+        min-height: 50vh
+        .skus
+            margin: 30px 0
+            display: grid
+            grid-template-columns: 1fr 1fr 1fr 1fr
+            .sku-box
+                padding: 5px
+                border: 3px black solid
+                margin: 2%
+                p
+                    text-align: center
+        form
+            .error
+                color: red
+                font-size: 11px
+            .form-row
+                margin: 10px
+                label
+                    width: 100px
+                    display: inline-block
+                
+    .footer
+        .footer-text
+            display: fixed
+            margin: 20px auto
+            width: fit-content
+

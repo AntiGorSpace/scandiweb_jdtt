@@ -1,0 +1,67 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: system-ui;
+}
+
+.hidden {
+  display: none !important;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0 50px;
+}
+body .header {
+  width: 100%;
+  margin: 50px 5px 5px 5px;
+  align-items: baseline;
+  display: inline-flex;
+  justify-content: space-between;
+}
+body .header button {
+  margin-right: 10px;
+  background-color: white;
+  padding: 3px;
+  box-shadow: 2px 2px 0px black;
+  cursor: pointer;
+}
+body .split-line {
+  width: 100%;
+  margin: auto;
+  border-bottom: 2px black solid;
+}
+body .content {
+  min-height: 50vh;
+}
+body .content .skus {
+  margin: 30px 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+body .content .skus .sku-box {
+  padding: 5px;
+  border: 3px black solid;
+  margin: 2%;
+}
+body .content .skus .sku-box p {
+  text-align: center;
+}
+body .content form .error {
+  color: red;
+  font-size: 11px;
+}
+body .content form .form-row {
+  margin: 10px;
+}
+body .content form .form-row label {
+  width: 100px;
+  display: inline-block;
+}
+body .footer .footer-text {
+  display: fixed;
+  margin: 20px auto;
+  width: fit-content;
+}
+
+/*# sourceMappingURL=style.css.map */
