@@ -35,7 +35,10 @@ require_once "blocks/header.php";
             $result = $mysqli -> query('select * from category_properties order by id');
             if($result->num_rows){
                 while ($row = $result->fetch_object()) {
-                    echo '<div class="form-row hidden" data-category_id="' . $row->category_id . '"><label for="cat_' . $row->code . '">' . $row->label . '</label><input type="number" id="cat_' . $row->code . '" name="cat_' . $row->code . '"></div>';
+                    echo "<div class='form-row hidden' data-category_id='$row->category_id'>
+                            <label for='$row->code'>$row->label</label>
+                            <input type='number' id='$row->code' name='cat_$row->code'>
+                        </div>";
                 }
             }    
         ?>

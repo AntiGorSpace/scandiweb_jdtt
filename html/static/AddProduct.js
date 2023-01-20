@@ -11,7 +11,11 @@ AppProduct = {
         let form_data = $('#product_form').serializeArray();
         form_data.forEach((e)=>{
             let value = e.value.trim();
-            if(value) req_data[e.name] = value;
+            let name = e.name;
+            if($(`#${e.name}`).attr('name')){
+                name = $(`#${e.name}`).attr('name');
+            }
+            if(value) req_data[name] = value;
         })
         req_data.category_id = req_data.category_id*1;
         if (this.check_fields(req_data)) this.send_sku(req_data);
