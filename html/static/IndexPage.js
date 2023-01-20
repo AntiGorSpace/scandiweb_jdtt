@@ -25,7 +25,7 @@ IndexPage = {
     },
     init: function(){
         $('#add_sku').on('click',()=>{
-            window.location.href = '/add-product';
+            window.location.href = '/add-product.php';
         })
         $('#delete-product-btn').on('click',()=>{
             this.delete_skus();
