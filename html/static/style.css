@@ -51,6 +51,10 @@ body .content form .error {
   color: red;
   font-size: 11px;
 }
+body .content form .success {
+  color: green;
+  font-size: 11px;
+}
 body .content form .form-row {
   margin: 10px;
 }

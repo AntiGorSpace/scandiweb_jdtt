@@ -370,3 +370,4 @@
 2023/01/20 19:47:53 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
 2023/01/20 19:47:53 [notice] 1#1: start worker processes
 2023/01/20 19:47:53 [notice] 1#1: start worker process 27
+2023/01/21 20:58:54 [error] 27#27: *332 open() "/var/www/html/static/admin/javascript/hetong.js" failed (2: No such file or directory), client: 172.21.0.1, server: , request: "GET /static/admin/javascript/hetong.js HTTP/1.0", host: "localhost:3040"

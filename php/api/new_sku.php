@@ -3,12 +3,19 @@ require_once "../code/start_connection.php";
 
 
 class SaveSku{
+    public array $errors;
+    public bool $error;
     function __construct() {
+        $this->errors = [];
+        $this->error=false;
         $this->check_exist_code();
         $this->check_data();
+        if ($this->error){
+            echo json_encode($this->errors);
+            exit();
+        }
         $this->save_sku();
         $this->save_sku_params();
-
     }
     function check_exist_code(){
         global $mysqli;
@@ -17,15 +24,15 @@ class SaveSku{
         $result->execute();
         $result->store_result();
         if ($result->num_rows) {
-            echo '{"error":"sku code alredy exist"}';
-            exit();
+            $this->errors['sku_exist'] = 1;
+            $this->error = true;
         }
     }
     function check_data(){
         foreach(['category_id', 'sku', 'price'] as $fname){
+            $this->errors['not_null'] = [];
             if (!$_POST[$fname] ){
-                echo '{"error":"'.$fname.' cant be null"}';
-                exit();
+                $this->errors['not_null'][$fname]=1;
             }
         }
     }
@@ -38,11 +45,7 @@ class SaveSku{
     }
     function save_sku_params(){
         global $mysqli;
-        foreach ($_POST as $key => $value) {
-            $code = str_replace("cat_", "", $key);
-            if ($code == $key) {
-                continue;
-            }
+        foreach ($_POST['cat_properties'] as $key => $value) {
             $result = $mysqli->prepare("
                 insert into sku_params (sku_id, category_property_id, value) 
                 select
@@ -55,7 +58,7 @@ class SaveSku{
                     category_id = ? and 
                     code = ?
                 ");
-            $result->bind_param("ssss", $_POST['sku'], $value, $_POST['category_id'], $code);
+            $result->bind_param("ssss", $_POST['sku'], $value, $_POST['category_id'], $key);
             $result->execute();
             $result->store_result();
         }
