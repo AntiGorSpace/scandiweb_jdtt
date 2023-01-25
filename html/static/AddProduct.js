@@ -46,7 +46,7 @@ AppProduct = {
                 let res_data = JSON.parse(res.responseText) 
                 if (res_data.ok) {
                     $('input').val('');
-                    this.show_error('product_form','Sku created', 'success');
+                    this.show_error('sku','Sku created', 'success');
                 }else{
                     if (res_data.sku_exist){
                         this.show_error('sku','SKU alredy exist', 'error');

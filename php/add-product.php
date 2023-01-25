@@ -6,6 +6,88 @@ $head_buttons = [
 ];
 require_once "blocks/header.php";
 
+class Category{
+    private int $id;
+    private string $name;
+    public function set_id(int $id){
+        $this->id = $id;
+    }
+    public function set_name(string $name){
+        $this->name = $name;
+    }
+    public function draw(){
+        echo '<option value = "'.$this->id.'">'.$this->name.'</option>';
+    }
+}
+class CategoryProperty{
+    private string $code;
+    private string $label;
+    private int $category_id;
+    public function set_code(string $code){
+        $this->code = $code;
+    }
+    public function set_label(string $label){
+        $this->label = $label;
+    }
+    public function set_category_id(int $category_id){
+        $this->category_id = $category_id;
+    }
+    public function draw(){
+        echo "<div class='form-row hidden' data-category_id='$this->category_id'>
+                <label for='$this->code'>$this->label</label>
+                <input type='number' id='$this->code' name='cat_$this->code'>
+            </div>";
+    }
+}
+class Data{
+    private $mysqli;
+    private array $categories;
+    private array $category_properties;
+    function __construct(){
+        global $mysqli;
+        $this->mysqli = $mysqli;
+        $this->categories = [];
+        $this->category_properties = [];
+    }
+    public function get_categories(){
+        $result = $this->mysqli -> query('select * from categories order by id');
+        if($result->num_rows){
+            while ($row = $result->fetch_object()) {
+                $category = new Category();
+                $category->set_id($row->id);
+                $category->set_name($row->name);
+                $this->categories[$row->id] = $category;
+            }
+        }    
+    }
+    public function get_category_properties(){
+        $result = $this->mysqli -> query('select * from category_properties order by id');
+        if($result->num_rows){
+            while ($row = $result->fetch_object()) {
+                $property = new CategoryProperty();
+                $property->set_code($row->code);
+                $property->set_label($row->label);
+                $property->set_category_id($row->category_id);
+                $this->category_properties[$row->id] = $property;
+            }
+        }    
+    }
+    public function draw_categories(){
+        foreach($this->categories as $id => $category){
+            $category->draw();
+        }
+    }
+    public function draw_category_properties(){
+        foreach($this->category_properties as $code => $property){
+            $property->draw();
+        }
+    }
+}
+
+$data = new Data();
+$data->get_categories();
+$data->get_category_properties();
+
 ?>
 <div class="content">
     <form id = "product_form">
@@ -21,32 +103,15 @@ require_once "blocks/header.php";
         <div class="form-row">
             <label for="productType">Type Switcher</label>
             <select id="productType" name="category_id">
-                <?php
-                    $result = $mysqli -> query('select * from categories order by id');
-                    if($result->num_rows){
-                        while ($row = $result->fetch_object()) {
-                            echo '<option value = "'.$row->id.'">'.$row->name.'</option>';
-                        }
-                    }    
-                ?>
+                <?php $data->draw_categories() ?>
             </select>
         </div>
-        <?php
-            $result = $mysqli -> query('select * from category_properties order by id');
-            if($result->num_rows){
-                while ($row = $result->fetch_object()) {
-                    echo "<div class='form-row hidden' data-category_id='$row->category_id'>
-                            <label for='$row->code'>$row->label</label>
-                            <input type='number' id='$row->code' name='cat_$row->code'>
-                        </div>";
-                }
-            }    
-        ?>
+        <?php $data->draw_category_properties() ?>
     </form>
 </div>  
-<?php require_once "blocks/footer.php" ?>
 
 
 <script src="/static/AddProduct.js"></script>
 
 
+<?php require_once "blocks/footer.php" ?>
