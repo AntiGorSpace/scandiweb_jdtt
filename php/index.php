@@ -43,15 +43,14 @@ class Sku{
             </div>";
     }
 }
-class data{
-    private $mysqli;
+class Data extends Base{
+   
     private array $skus;
     function __construct(){
-        global $mysqli;
-        $this->mysqli = $mysqli;
-        $this->skus = [];
+        $this->connect_base();
     }
     public function get_skus(){
+        $this->skus = [];
         $result = $this->mysqli -> query("
             select
                 s.id,

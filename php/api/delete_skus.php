@@ -3,15 +3,9 @@
 require_once "../code/start_connection.php";
 
 
-class DeleteSku{
-    private $mysqli;
+class DeleteSku extends Base{
     private array $sku_ids;
 
-    function __construct() {
-        global $mysqli;
-        $this->mysqli=$mysqli;        
-        $this->sku_ids = [];
-    }
     public function set_sku_ids(array $sku_ids){
         $this->sku_ids = [];
         foreach ($sku_ids as $id) {
@@ -34,6 +28,7 @@ class DeleteSku{
 $sku = new DeleteSku();
 $sku->set_sku_ids($_POST['ids']);
 $sku->delete();
+$sku->close();
 
 
 
