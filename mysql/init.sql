@@ -1,12 +1,13 @@
 create table if not exists categories(
     id serial not null primary key,
+    property_template_string varchar(128),
     name varchar(64) unique
 );
 
 create table if not exists category_properties(
     id serial not null primary key,
     category_id integer references categories,
-    code varchar(64) unique,
+    code varchar(64),
     label varchar(64)
 );
 
@@ -28,11 +29,11 @@ create table if not exists sku_params(
 );
 
 insert into categories
-    (name) 
+    (name, property_template_string) 
 values 
-    ('DVD'),
-    ('Furniture'),
-    ('Book');
+    ('DVD', 'Size: {{size}} MB'),
+    ('Furniture', 'Dimension: {{height}}x{{width}}x{{length}} CM'),
+    ('Book', 'Weight: {{weight}} KG');
 
 insert into category_properties 
     (category_id, code, label)

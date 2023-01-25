@@ -4,56 +4,103 @@ $head_buttons = [
     [ "id"=>"add_sku", "name" => "ADD" ],
     [ "id"=>"delete-product-btn", "name" => "MASS DELETE" ]
 ];
-    require_once "blocks/header.php" 
-?>
-<div class="content">
-    <div class="skus">
-        <?php
-            $result = $mysqli -> query("
+require_once "blocks/header.php";
 
+class Sku{
+
+    private int $id;
+    private string $name;
+    private string $sku;
+    private float $price;
+    private string $params;
+    public function set_id(int $id){
+        $this->id = $id;
+    }
+    public function set_name(string $name){
+        $this->name = $name;
+    }
+    public function set_sku(string $sku){
+        $this->sku = $sku;
+    }
+    public function set_price(float $price){
+        $this->price = $price;
+    }
+    public function set_params(string $jparams, string $property_template_string){
+        $data_params = json_decode($jparams);
+        $params = $property_template_string;     
+        foreach ($data_params as $code => $value) { 
+            $params = str_replace("{{".$code."}}","$value",$params);
+        }   
+        $this->params = $params;    
+    }
+    public function draw(){
+        echo  "<div class = 'sku-box'>
+                <input class='delete-checkbox' type='checkbox' date-sku_id='$this->id'>
+                <p>$this->sku</p>
+                <p>$this->name</p>
+                <p>$this->price $</p>
+                <p>$this->params</p>
+            </div>";
+    }
+}
+class data{
+    private $mysqli;
+    private array $skus;
+    function __construct(){
+        global $mysqli;
+        $this->mysqli = $mysqli;
+        $this->skus = [];
+    }
+    public function get_skus(){
+        $result = $this->mysqli -> query("
             select
                 s.id,
                 s.sku,
                 s.name,
                 s.price,
-                sp.params
+                sp.jparams,
+                c.property_template_string
             from
                 skus as s
+                left join categories as c on c.id = s.category_id
                 left join (
                     SELECT
                         sp.sku_id,
-                        case 
-                            when max(cp.code)='size' then CONCAT('Size: ', max(sp.value), ' MB')
-                            when max(cp.code)='weight' then CONCAT('Weight: ', max(sp.value), ' KG')
-                            else CONCAT(
-                                'Dimension: ', 
-                                max(case when cp.code='height' then sp.value end), 'x', 
-                                max(case when cp.code='width' then sp.value end), 'x', 
-                                max(case when cp.code='length' then sp.value end),
-                                ' CM'
-                            )
-                        end params
+                        JSON_OBJECTAGG(cp.code,sp.value) as jparams
                     from
                         sku_params as sp
                         left join category_properties as cp on cp.id = sp.category_property_id
                     group BY
                         sp.sku_id
                 ) as sp on sp.sku_id = s.id
-                order by s.id
-            ");
-            if($result->num_rows){
-                while ($row = $result->fetch_object()) {
-                    echo "<div class = 'sku-box'>
-                        <input class='delete-checkbox' type='checkbox' date-sku_id='$row->id'>
-                        <p>$row->sku</p>
-                        <p>$row->name</p>
-                        <p>$row->price $</p>
-                        <p>$row->params</p>
-                    </div>";
-                    // echo '<div class="form-row hidden" data-category_id="' . $row->category_id . '"><label for="cat_' . $row->code . '">' . $row->label . '</label><input type="number" id="cat_' . $row->code . '" name="cat_' . $row->code . '"></div>';
-                }
+            order by s.id
+        ");
+        if($result->num_rows){
+            while ($row = $result->fetch_object()) {
+                $sku = new Sku();
+                $sku->set_id($row->id);
+                $sku->set_name($row->name);
+                $sku->set_sku($row->sku);
+                $sku->set_price($row->price);
+                $sku->set_params($row->jparams, $row->property_template_string);
+                $this->skus[$row->id] = $sku;
             }
-        ?>
+        }    
+    }
+    public function draw_skus(){
+        foreach($this->skus as $id => $sku){
+            $sku->draw();
+        }
+    }
+}
+
+$data = new Data();
+$data->get_skus();
+?>
+
+<div class="content">
+    <div class="skus">
+        <?php $data->draw_skus() ?>
     </div>
 </div>  
 <?php require_once "blocks/footer.php" ?>
