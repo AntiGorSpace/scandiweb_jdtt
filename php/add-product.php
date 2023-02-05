@@ -39,17 +39,11 @@ class CategoryProperty{
             </div>";
     }
 }
-class Data{
-    private $mysqli;
+class Data extends Base{
     private array $categories;
     private array $category_properties;
-    function __construct(){
-        global $mysqli;
-        $this->mysqli = $mysqli;
-        $this->categories = [];
-        $this->category_properties = [];
-    }
     public function get_categories(){
+        $this->categories = [];
         $result = $this->mysqli -> query('select * from categories order by id');
         if($result->num_rows){
             while ($row = $result->fetch_object()) {
@@ -61,6 +55,7 @@ class Data{
         }    
     }
     public function get_category_properties(){
+        $this->category_properties = [];
         $result = $this->mysqli -> query('select * from category_properties order by id');
         if($result->num_rows){
             while ($row = $result->fetch_object()) {
@@ -87,6 +82,7 @@ class Data{
 $data = new Data();
 $data->get_categories();
 $data->get_category_properties();
+$data->close();
 
 ?>
 <div class="content">

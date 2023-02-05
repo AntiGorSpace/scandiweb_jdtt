@@ -2,8 +2,7 @@
 require_once "../code/start_connection.php";
 
 
-class SaveSku{
-    private $mysqli;
+class SaveSku extends Base{
     private array $errors;
     private bool $error;
     private int $category_id;
@@ -12,12 +11,10 @@ class SaveSku{
     private float $price;
     private array $properties;
     
-    function __construct() {
-        global $mysqli;
-        $this->errors = [];
+    public function __construct(){
         $this->errors['not_null'] = [];
         $this->error=false;
-        $this->mysqli=$mysqli;        
+        $this->connect_base();
     }
     public function set_sku(string $sku){
         if ($sku) {
@@ -113,6 +110,7 @@ $sku->set_price($_POST['price']);
 $sku->set_category_id($_POST['category_id']);
 $sku->set_properties($_POST['cat_properties']);
 $sku->save();
+$sku->close();
 
 
 require_once "../code/end_connection.php";
